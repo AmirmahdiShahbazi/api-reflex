@@ -1,11 +1,28 @@
 <?php
 
-header('Access-Control-Allow-Origin: http://localhost:5173');
+// دریافت آدرس فرانت‌اند به‌صورت خودکار
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+// لیست پورت‌های مجاز فرانت‌اند
+$allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+];
+
+if (in_array($origin, $allowedOrigins, true)) {
+    header("Access-Control-Allow-Origin: {$origin}");
+} elseif (empty($origin)) {
+    header("Access-Control-Allow-Origin: *");
+}
+
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Content-Type: application/json; charset=utf-8');
 
-// Handle CORS preflight
+// پاسخ به درخواست‌های Preflight مرورگر (OPTIONS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
